@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import "./index.css";
+import Logo from "./components/Logo";
+import NavBar from "./components/NavBar";
+import PackingList from "./components/PakckingList";
+import Stats from "./components/Stats";
+import { useState } from "react";
+export default function App() {
+  const [items, setItems] = useState([]);
+  function handleEmptyList() {
+    if (!items.length) return;
+    const confirm = window.confirm("Are you sure you  wanna delete all items");
+    if (confirm) setItems([]);
+  }
+  function handlePack(id) {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  }
 
-function App() {
+  function handleAddItems(item) {
+    setItems((items) => [...items, item]);
+  }
+  function handleDeleteItem(id) {
+    setItems(items.filter((item) => item.id !== id));
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Logo />
+      <NavBar onAddItems={handleAddItems} handlePack={handlePack} />
+      <PackingList
+        items={items}
+        onDeleteItem={handleDeleteItem}
+        handlePack={handlePack}
+        onReset={handleEmptyList}
+      />
+      <Stats items={items} />
     </div>
   );
 }
-
-export default App;
